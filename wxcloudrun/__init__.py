@@ -1,24 +1,27 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import pymysql
+
 import config
 
-# 因MySQLDB不支持Python3，使用pymysql扩展库代替MySQLDB库
 pymysql.install_as_MySQLdb()
 
-# 初始化web应用
-app = Flask(__name__, instance_relative_config=True)
-app.config['DEBUG'] = config.DEBUG
+app = Flask(__name__, instance_relative_config=True, template_folder="templates")
+app.config.from_object('config')
 
-# 设定数据库链接
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://{}:{}@{}/flask_demo'.format(config.username, config.password,
-                                                                             config.db_address)
+app.config.setdefault('JSON_SORT_KEYS', False)
 
-# 初始化DB操作对象
+# Initialize database
+app.config['SQLALCHEMY_DATABASE_URI'] = config.SQLALCHEMY_DATABASE_URI
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = config.SQLALCHEMY_TRACK_MODIFICATIONS
+
 db = SQLAlchemy(app)
 
-# 加载控制器
-from wxcloudrun import views
+# Import views and models after db initialization to avoid circular imports
+from wxcloudrun import views  # noqa: E402,F401
 
-# 加载配置
-app.config.from_object('config')
+with app.app_context():
+    from wxcloudrun import model  # noqa: F401
+    db.create_all()
+    if hasattr(model, 'ensure_default_admin'):
+        model.ensure_default_admin()
