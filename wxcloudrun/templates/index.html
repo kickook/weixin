@@ -1,300 +1,791 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 
 <head>
   <meta charset="utf-8" />
-  <link rel="shortcut icon"
-    href="https://static-index-4gtuqm3bfa95c963-1304825656.tcloudbaseapp.com/official-website/favicon.svg"
-    mce_href="https://static-index-4gtuqm3bfa95c963-1304825656.tcloudbaseapp.com/official-website/favicon.svg"
-    type="image/x-icon" />
-  <meta name="viewport"
-    content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous" />
-  <title>欢迎使用微信云托管，hello word</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>麻醉生命体征智能预警平台</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <style>
+    :root {
+      --bg-gradient: radial-gradient(circle at 0% 0%, rgba(0, 255, 255, 0.18), transparent 45%),
+        radial-gradient(circle at 100% 0%, rgba(30, 144, 255, 0.18), transparent 45%),
+        radial-gradient(circle at 50% 100%, rgba(0, 191, 255, 0.25), transparent 55%),
+        #0f172a;
+      --card-bg: rgba(15, 23, 42, 0.82);
+      --card-border: rgba(148, 163, 184, 0.18);
+      --accent: #38bdf8;
+      --accent-glow: 0 0 20px rgba(56, 189, 248, 0.35);
+      --text-primary: #e2e8f0;
+      --text-secondary: #94a3b8;
+      --alert-critical: #f87171;
+      --alert-warning: #fbbf24;
+      font-size: 16px;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Droid Sans", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Droid Sans Fallback", "Microsoft YaHei", sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      overflow: hidden;
     }
 
-    .title-logo {
-      width: 80px;
-      height: 80px;
+    .app-shell {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      height: 100vh;
+      backdrop-filter: blur(22px);
     }
 
-    .container {
+    .sidebar {
+      padding: 24px;
+      border-right: 1px solid rgba(56, 189, 248, 0.12);
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.75) 100%);
+      box-shadow: inset -1px 0 0 rgba(56, 189, 248, 0.1);
       display: flex;
       flex-direction: column;
-      align-items: center;
+      gap: 24px;
     }
 
-    @media screen and (min-width:1200px) {
-      body .container {
-        margin-top: 160px;
-        margin-bottom: 272px;
-      }
-    }
-
-    @media screen and (max-width:1919px) {
-      body .container {
-        margin-top: 76px;
-        margin-bottom: 128px;
-      }
-    }
-
-    .container {
+    .brand {
       display: flex;
       flex-direction: column;
-      align-items: center;
+      gap: 8px;
     }
 
-    .count-button {
-      width: 320px;
-      height: 40px;
-      box-sizing: border-box;
-      margin: 16px 8px;
-      font-weight: 500;
-      font-size: 17px;
-      color: #FFFFFF;
-      letter-spacing: 1px;
-      text-align: center;
-      border-radius: 4px;
+    .brand-title {
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 0.15em;
+      font-size: 1.1rem;
+      text-transform: uppercase;
     }
 
-    .count-number {
-      align-self: flex-start;
-      opacity: 0.9;
-      font-weight: 500;
-      font-size: 14px;
-      color: #000000;
+    .brand-subtitle {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
     }
 
-    .count-reset {
-      color: #576b95;
+    .room-list {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .room-card {
+      border: 1px solid transparent;
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
       cursor: pointer;
-      margin-left: auto;
+      transition: all 0.25s ease;
+      background: rgba(15, 23, 42, 0.65);
     }
 
-    .count-text {
-      width: 320px;
-      height: 40px;
-      padding: 0 12px;
-      margin: 0 auto;
-      line-height: 40px;
-      text-align: left;
-      display: flex;
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      border-radius: 4px;
-      opacity: 0.9;
-      box-sizing: border-box;
-      font-weight: 400;
-      font-size: 14px;
-      color: #000000;
+    .room-card.active,
+    .room-card:hover {
+      border-color: rgba(56, 189, 248, 0.45);
+      box-shadow: var(--accent-glow);
     }
 
-    .quote {
-      font-size: 12px;
+    .room-card h5 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
     }
 
-    .qrcode {
-      height: 144px;
-      width: 144px;
+    .room-card span {
       display: block;
-      margin: 0 auto;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-top: 4px;
     }
 
-    .title {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      width: 320px;
-    }
-
-    .title-text {
-      width: 320px;
-      height: 48px;
-      text-align: center;
-      margin-top: 16px;
-      font-size: 32px;
-      opacity: 0.9;
-      font-weight: 500;
-      font-size: 32px;
-      color: #000000;
-      letter-spacing: 0;
-      line-height: 48px;
-    }
-
-    .counter-container {
-      margin-top: 48px;
-    }
-
-    .hr {
-      text-align: center;
-      position: relative;
-      z-index: 2;
-      height: 20px;
-      line-height: 20px;
-    }
-
-    .hr::after {
-      position: absolute;
-      content: '';
-      top: 10px;
-      left: 60px;
-      width: 200px;
-      border-bottom: 1px solid rgba(0, 0, 0, .1);
-      z-index: -1;
-    }
-
-    .hr small {
-      display: inline-block;
-      background-color: white;
-    }
-
-    .hr-text {
-      display: inline-block;
-      height: 20px;
-      font-weight: 400;
-      font-size: 14px;
-      color: rgba(0, 0, 0, 0.55);
-      letter-spacing: 0;
-      text-align: center;
-      z-index: 2;
-      background-color: white;
-      padding: 0 8px;
-      line-height: 20px;
-    }
-
-    .link-button {
-      width: 154px;
-      height: 48px;
-      box-sizing: border-box;
-      font-weight: 400;
-      font-size: 14px;
-      color: rgba(0, 0, 0, 0.90);
-      letter-spacing: 0;
-      text-align: center;
-      background: rgba(0, 0, 0, 0.03);
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .card {
-      margin-top: 16px;
-      width: 320px;
-      height: 200px;
-      box-sizing: border-box;
-      border: 1px solid rgba(0, 0, 0, 0.10);
-      border-radius: 5.71px;
+    .workspace {
+      padding: 28px 36px;
+      overflow-y: auto;
       position: relative;
     }
 
-    .card-text {
+    .workspace::-webkit-scrollbar,
+    .room-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .workspace::-webkit-scrollbar-thumb,
+    .room-list::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.25);
+      border-radius: 999px;
+    }
+
+    .hero {
+      margin-bottom: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .hero .copy h1 {
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 0.08em;
+      font-size: 1.85rem;
+      margin-bottom: 12px;
+    }
+
+    .hero .copy p {
+      color: var(--text-secondary);
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .glass-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 12px 45px rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(18px);
+      height: 100%;
+    }
+
+    .panel-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .panel-grid.full {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .section-title {
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+    }
+
+    label {
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    input,
+    select,
+    textarea {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      border-radius: 12px !important;
+      color: var(--text-primary);
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: rgba(56, 189, 248, 0.55);
+      box-shadow: var(--accent-glow);
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--text-primary);
+    }
+
+    .btn-futuristic {
+      background: linear-gradient(90deg, rgba(56, 189, 248, 0.9), rgba(129, 140, 248, 0.9));
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 12px 20px;
+      color: #0f172a;
+      box-shadow: 0 12px 40px rgba(56, 189, 248, 0.35);
+    }
+
+    .btn-futuristic:disabled {
+      opacity: 0.4;
+      box-shadow: none;
+    }
+
+    .device-item,
+    .parameter-item,
+    .alert-item {
+      border-radius: 12px;
+      padding: 14px;
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      margin-bottom: 12px;
+    }
+
+    .parameter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 14px;
+    }
+
+    .parameter-chip {
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.18);
       text-align: center;
-      font-weight: 400;
-      font-size: 14px;
-      color: rgba(0, 0, 0, 0.55);
-      letter-spacing: 0;
+    }
+
+    .parameter-chip h6 {
+      margin: 0;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .parameter-chip span {
+      display: block;
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      margin-top: 6px;
+    }
+
+    .alert-item {
+      position: relative;
+      border-left: 3px solid var(--alert-warning);
+    }
+
+    .alert-item.critical {
+      border-left-color: var(--alert-critical);
+      box-shadow: 0 0 20px rgba(248, 113, 113, 0.18);
+    }
+
+    .alert-item .badge {
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: var(--text-secondary);
+      padding: 24px;
+      border: 1px dashed rgba(148, 163, 184, 0.18);
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.4);
+    }
+
+    .medication-tag {
+      display: inline-flex;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.24);
+      margin: 4px;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+
+    .data-stream {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.6rem;
+      letter-spacing: 0.12em;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .data-stream .value {
+      background: rgba(56, 189, 248, 0.1);
+      padding: 12px 18px;
+      border-radius: 14px;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      box-shadow: inset 0 0 20px rgba(56, 189, 248, 0.2);
+    }
+
+    @media (max-width: 1100px) {
+      body {
+        overflow: auto;
+      }
+
+      .app-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        flex-direction: row;
+        gap: 16px;
+        align-items: center;
+        overflow-x: auto;
+        border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+      }
+
+      .room-list {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 12px;
+        overflow-x: auto;
+        overflow-y: hidden;
+      }
+
+      .room-card {
+        min-width: 220px;
+      }
+
+      .workspace {
+        padding: 24px;
+        height: auto;
+        overflow: visible;
+      }
+
+      .panel-grid,
+      .panel-grid.full {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <div class="title">
-      <img class="title-logo"
-        src="https://static-index-4gtuqm3bfa95c963-1304825656.tcloudbaseapp.com/official-website/favicon.svg" />
-      <div style="display: inline; margin-bottom: 48px" class="title-text">欢迎使用微信云托管</div>
-    </div>
-    <div style="text-align: center; display: flex; flex-direction: column; align-items: center; margin: 0">
-      <span class="count-text">
-        <span style="margin-right: 16px;">当前计数:</span>
-        <span class="count-number"></span>
-        <span class="count-reset" onclick="set('clear')">清零</span>
-      </span>
-      <a class="btn btn-success btn-lg count-button" style="background: #07c160; border: 0"
-        onclick="set('inc')">计数+1</a>
-      <div class="card" style="width: 320px; margin-bottom: 48px;">
-        <div class="card-body">
-          <img class="qrcode middle"
-            src="https://qcloudimg.tencent-cloud.cn/raw/89b46988d3cd73d8a56e76a1b82bb377.png" />
-          <small class="card-text" style="display: flex; justify-content: center; margin-top: 8px">扫码加入微信云托管用户群</small>
-        </div>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="status-pill">Aegis Anaesthesia</div>
+        <div class="brand-title">智能麻醉保障中心</div>
+        <div class="brand-subtitle">多手术间 · 实时预警 · Dify 智能干预</div>
       </div>
-      <div>
-        <div class="hr">
-          <span class="hr-text">快速入门</span>
+      <div class="section-title">手术间</div>
+      <div class="room-list" id="roomList"></div>
+      <button class="btn btn-futuristic" id="addRoomBtn">新增手术间</button>
+    </aside>
+    <main class="workspace">
+      <section class="hero">
+        <div class="copy">
+          <h1>全流程麻醉生命体征预警</h1>
+          <p>配置监护仪、注射泵与麻醉机接口，实时捕获关键参数。当值班医生选择手术间后，系统即时接入监测，
+            超阈值信息会携带患者用药、病史等资料同步至 Dify LLM，生成个性化干预建议。</p>
         </div>
-        <div style="display: flex; justify-content: space-between; margin-top: 16px;">
-          <a class="btn btn-light btn-lg link-button" style="border: 0; box-shadow: none; margin-right: 12px;"
-            href="https://developers.weixin.qq.com/miniprogram/dev/wxcloudrun/src/basic/intro.html" target="_blank"
-            rel="noopener noreferrer">
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px"
-              height="24px" viewBox="0 0 24 24">
-              <title>icons_outline_warrant copy</title>
-              <g id="icons_outline_warrant-copy" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                <g id="0.&#x56FE;&#x6807;/&#x7EBF;&#x578B;/icons_outlined_copy">
-                  <rect id="Rectangle" x="0" y="0" width="20" height="20"></rect>
-                  <path
-                    d="M13.9979043,2 L20,8 L20,21.0013542 C20,21.5542301 19.5541613,22 19.0041915,22 L5.99580851,22 C5.44892021,22 5,21.552891 5,21.0013542 L5,2.99864581 C5,2.44576991 5.44583866,2 5.99580851,2 L13.9979043,2 Z M12.399,3.2 L6.2,3.2 L6.2,20.8 L18.8,20.8 L18.8,9.6 L14,9.6 C13.1163444,9.6 12.4,8.8836556 12.4,8 L12.399,3.2 Z M14.2,14.4 L14.2,15.6 L7.8,15.6 L7.8,14.4 L14.2,14.4 Z M17.2,12 L17.2,13.2 L7.8,13.2 L7.8,12 L17.2,12 Z M13.599,3.299 L13.6,8 C13.6,8.2209139 13.7790861,8.4 14,8.4 L18.703,8.4 L13.599,3.299 Z"
-                    id="Combined-Shape" fill-opacity="0.9" fill="#000000"></path>
-                </g>
-              </g>
-            </svg>
-            <span style="margin-left: 4px">开发者文档</span></a>
-          <a class="btn btn-light btn-lg link-button" style="border: 0; box-shadow: none;"
-            href="https://developers.weixin.qq.com/community/business/course/00068c2c0106c0667f5b01d015b80d"
-            target="_blank" rel="noopener noreferrer">
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px"
-              height="24px" viewBox="0 0 24 24">
-              <title>icons_outlined_play</title>
-              <g id="&#x573A;&#x666F;&#x5316;&#x90E8;&#x7F72;" stroke="none" stroke-width="1" fill="none"
-                fill-rule="evenodd">
-                <g id="icons_outlined_play">
-                  <rect id="Rectangle-664" x="0" y="0" width="20" height="20"></rect>
-                  <path
-                    d="M12,20.8 C16.8601058,20.8 20.8,16.8601058 20.8,12 C20.8,7.1398942 16.8601058,3.2 12,3.2 C7.1398942,3.2 3.2,7.1398942 3.2,12 C3.2,16.8601058 7.1398942,20.8 12,20.8 Z M12,22 C6.4771525,22 2,17.5228475 2,12 C2,6.4771525 6.4771525,2 12,2 C17.5228475,2 22,6.4771525 22,12 C22,17.5228475 17.5228475,22 12,22 Z M10.7,14.8349028 L15.2358445,12 L10.7,9.16509717 L10.7,14.8349028 Z M10.2649995,7.47812467 L16.8216014,11.5760008 C17.0557696,11.722356 17.1269562,12.0308312 16.980601,12.2649995 C16.9403607,12.329384 16.8859859,12.3837588 16.8216014,12.4239992 L10.2649995,16.5218753 C10.0308312,16.6682305 9.72235601,16.5970439 9.57600085,16.3628756 C9.52633472,16.2834098 9.5,16.191586 9.5,16.0978762 L9.5,7.90212382 C9.5,7.62598145 9.72385763,7.40212382 10,7.40212382 C10.0937099,7.40212382 10.1855337,7.42845854 10.2649995,7.47812467 Z"
-                    id="Oval-78" fill-opacity="0.9" fill="#000000"></path>
-                </g>
-              </g>
-            </svg>
-            <span style="margin-left: 4px">视频教程</span></a>
+        <div>
+          <div class="glass-card" style="width: 260px;">
+            <div class="section-title">活跃会话</div>
+            <div id="activeSessions" class="empty-state">暂无监测会话</div>
+          </div>
         </div>
-      </div>
-    </div>
+      </section>
+      <section class="panel-grid">
+        <div class="glass-card" id="roomDetails">
+          <div class="section-title">手术间配置</div>
+          <div class="empty-state">选择左侧手术间查看详情</div>
+        </div>
+        <div class="glass-card">
+          <div class="section-title">启动监测</div>
+          <form id="sessionForm" class="row g-3">
+            <div class="col-md-6">
+              <label for="patientName" class="form-label">患者姓名</label>
+              <input type="text" class="form-control" id="patientName" placeholder="例如：张三" required />
+            </div>
+            <div class="col-md-6">
+              <label for="patientMrn" class="form-label">病历号</label>
+              <input type="text" class="form-control" id="patientMrn" placeholder="必填" required />
+            </div>
+            <div class="col-md-4">
+              <label for="patientSex" class="form-label">性别</label>
+              <select class="form-select" id="patientSex">
+                <option value="">-</option>
+                <option value="男">男</option>
+                <option value="女">女</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label for="patientAge" class="form-label">年龄</label>
+              <input type="number" min="0" class="form-control" id="patientAge" />
+            </div>
+            <div class="col-md-4">
+              <label for="patientDiagnosis" class="form-label">诊断/术式</label>
+              <input type="text" class="form-control" id="patientDiagnosis" />
+            </div>
+            <div class="col-12">
+              <label for="patientAllergy" class="form-label">过敏史</label>
+              <input type="text" class="form-control" id="patientAllergy" placeholder="如：青霉素过敏" />
+            </div>
+            <div class="col-12">
+              <label class="form-label">麻醉用药 (名称 / 剂量 / 途径)</label>
+              <div id="medicationList" class="d-flex flex-wrap mb-2"></div>
+              <div class="input-group">
+                <input type="text" class="form-control" id="medicationInput" placeholder="丙泊酚 200mg 静推" />
+                <button class="btn btn-outline-info" type="button" id="addMedicationBtn">添加</button>
+              </div>
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-futuristic w-100" id="startSessionBtn" disabled>选择手术间后启动</button>
+            </div>
+          </form>
+        </div>
+      </section>
+      <section class="panel-grid full" style="margin-top: 24px;">
+        <div class="glass-card">
+          <div class="section-title">设备与参数</div>
+          <div id="deviceList" class="empty-state">等待选择手术间或启动监测</div>
+        </div>
+        <div class="glass-card">
+          <div class="section-title">实时数据流</div>
+          <div id="dataStream" class="empty-state">尚未接入监测数据</div>
+          <button class="btn btn-futuristic mt-3" id="simulateBtn" disabled>模拟采集数据</button>
+        </div>
+        <div class="glass-card">
+          <div class="section-title">预警与 Dify 建议</div>
+          <div id="alertList" class="empty-state">暂无预警</div>
+        </div>
+      </section>
+    </main>
   </div>
+
+  <script>
+    const roomListEl = document.getElementById('roomList');
+    const roomDetailsEl = document.getElementById('roomDetails');
+    const deviceListEl = document.getElementById('deviceList');
+    const alertListEl = document.getElementById('alertList');
+    const dataStreamEl = document.getElementById('dataStream');
+    const activeSessionsEl = document.getElementById('activeSessions');
+    const sessionForm = document.getElementById('sessionForm');
+    const startSessionBtn = document.getElementById('startSessionBtn');
+    const simulateBtn = document.getElementById('simulateBtn');
+    const addMedicationBtn = document.getElementById('addMedicationBtn');
+    const medicationInput = document.getElementById('medicationInput');
+    const medicationList = document.getElementById('medicationList');
+    const addRoomBtn = document.getElementById('addRoomBtn');
+
+    let rooms = [];
+    let selectedRoom = null;
+    let currentSession = null;
+    let medications = [];
+
+    async function fetchRooms() {
+      const res = await fetch('/api/rooms');
+      const data = await res.json();
+      rooms = data.data || [];
+      renderRooms();
+    }
+
+    function renderRooms() {
+      if (!rooms.length) {
+        roomListEl.innerHTML = '<div class="empty-state" style="min-height:160px;">尚未配置手术间</div>';
+        return;
+      }
+      roomListEl.innerHTML = '';
+      rooms.forEach(room => {
+        const card = document.createElement('div');
+        card.className = 'room-card' + (selectedRoom && selectedRoom.id === room.id ? ' active' : '');
+        card.innerHTML = `<h5>${room.name}</h5><span>${room.location || '未填写位置'}</span>`;
+        card.onclick = () => {
+          selectedRoom = room;
+          currentSession = null;
+          renderRooms();
+          renderRoomDetails();
+          renderDevices(room.devices || []);
+          renderSession(null);
+          startSessionBtn.disabled = false;
+          simulateBtn.disabled = true;
+          fetchAlerts();
+        };
+        roomListEl.appendChild(card);
+      });
+    }
+
+    function renderRoomDetails() {
+      if (!selectedRoom) {
+        roomDetailsEl.innerHTML = '<div class="empty-state">选择左侧手术间查看详情</div>';
+        return;
+      }
+      const devices = selectedRoom.devices || [];
+      roomDetailsEl.innerHTML = `
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <div class="section-title">${selectedRoom.name}</div>
+            <h2 class="h5 mb-1">${selectedRoom.location || '未填写位置'}</h2>
+            <p class="text-muted" style="color: var(--text-secondary) !important;">${selectedRoom.description || '尚未添加描述'}</p>
+          </div>
+          <div class="status-pill">已配置设备 ${devices.length} 台</div>
+        </div>
+        <div class="parameter-grid">
+          ${devices.map(device => `
+            <div class="parameter-chip">
+              <h6>${device.name}</h6>
+              <span>${device.device_type.toUpperCase()}</span>
+            </div>`).join('') || '<div class="empty-state">暂未配置监测设备</div>'}
+        </div>`;
+    }
+
+    function renderDevices(devices) {
+      if (!devices || !devices.length) {
+        deviceListEl.innerHTML = '<div class="empty-state">手术间尚未配置监测参数</div>';
+        return;
+      }
+      deviceListEl.innerHTML = devices.map(device => `
+        <div class="device-item">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h5 class="mb-1">${device.name}</h5>
+              <div class="text-muted" style="color: var(--text-secondary) !important;">${device.manufacturer || ''} ${device.model || ''}</div>
+            </div>
+            <span class="status-pill">${device.device_type.toUpperCase()}</span>
+          </div>
+          <div class="parameter-grid mt-3">
+            ${(device.parameters || []).map(param => `
+              <div class="parameter-chip">
+                <h6>${param.display_name}</h6>
+                <span>${param.unit || ''}</span>
+                <span>阈值: ${formatThreshold(param.threshold)}</span>
+              </div>`).join('') || '<div class="empty-state">尚未配置参数阈值</div>'}
+          </div>
+        </div>`).join('');
+    }
+
+    function renderSession(session) {
+      currentSession = session;
+      if (!session) {
+        dataStreamEl.innerHTML = '<div class="empty-state">尚未接入监测数据</div>';
+        alertListEl.innerHTML = '<div class="empty-state">暂无预警</div>';
+        simulateBtn.disabled = true;
+        return;
+      }
+      simulateBtn.disabled = false;
+      renderActiveSessions();
+      fetchAlerts();
+    }
+
+    function renderActiveSessions() {
+      fetch('/api/sessions').then(res => res.json()).then(data => {
+        const sessions = data.data || [];
+        if (!sessions.length) {
+          activeSessionsEl.innerHTML = '<div class="empty-state">暂无监测会话</div>';
+          return;
+        }
+        activeSessionsEl.innerHTML = sessions.map(item => `
+          <div class="device-item" style="padding:12px; margin-bottom:12px;">
+            <div class="d-flex justify-content-between">
+              <strong>${item.patient?.name || '患者'}</strong>
+              <span class="status-pill">${item.room?.name || ''}</span>
+            </div>
+            <div class="text-muted" style="color: var(--text-secondary) !important;">开始于 ${formatTime(item.started_at)}</div>
+          </div>`).join('');
+      });
+    }
+
+    function renderAlerts(alerts) {
+      if (!alerts.length) {
+        alertListEl.innerHTML = '<div class="empty-state">暂无预警</div>';
+        return;
+      }
+      alertListEl.innerHTML = alerts.map(alert => `
+        <div class="alert-item ${alert.severity === 'critical' ? 'critical' : ''}">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <div class="badge bg-info text-dark">${alert.parameter?.display_name || '参数'}</div>
+              <h5 class="mt-2 mb-2">${alert.message}</h5>
+              <div class="text-muted" style="color: var(--text-secondary) !important;">触发时间：${formatTime(alert.triggered_at)}</div>
+            </div>
+            <div class="text-end">
+              <div class="badge bg-${alert.severity === 'critical' ? 'danger' : 'warning'} text-dark">${alert.severity}</div>
+            </div>
+          </div>
+          ${alert.dify_recommendation ? `<div class="mt-3">
+            <div class="section-title" style="margin-bottom:6px;">Dify 建议</div>
+            <p style="color: var(--text-secondary); white-space: pre-line;">${alert.dify_recommendation}</p>
+          </div>` : ''}
+        </div>`).join('');
+    }
+
+    function renderReadings(readings) {
+      if (!readings.length) {
+        dataStreamEl.innerHTML = '<div class="empty-state">尚未接入监测数据</div>';
+        return;
+      }
+      dataStreamEl.innerHTML = `<div class="data-stream">
+        ${readings.map(reading => `
+          <div class="value">
+            ${reading.parameter?.display_name || '参数'}
+            <strong style="color: var(--accent);"> ${reading.value}</strong>
+            <small>${reading.parameter?.unit || ''}</small>
+          </div>`).join('')}
+      </div>`;
+    }
+
+    function formatThreshold(threshold) {
+      if (!threshold) return '未设置';
+      const parts = [];
+      if (threshold.min_value !== null && threshold.min_value !== undefined) parts.push(`≥ ${threshold.min_value}`);
+      if (threshold.max_value !== null && threshold.max_value !== undefined) parts.push(`≤ ${threshold.max_value}`);
+      return parts.join(' · ') || '未设置';
+    }
+
+    function formatTime(timestamp) {
+      if (!timestamp) return '--';
+      const date = new Date(timestamp);
+      return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    }
+
+    sessionForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!selectedRoom) {
+        alert('请先选择手术间');
+        return;
+      }
+      const payload = {
+        room_id: selectedRoom.id,
+        patient: {
+          name: document.getElementById('patientName').value,
+          medical_record_number: document.getElementById('patientMrn').value,
+          sex: document.getElementById('patientSex').value,
+          age: document.getElementById('patientAge').value ? Number(document.getElementById('patientAge').value) : null,
+          diagnosis: document.getElementById('patientDiagnosis').value,
+          allergies: document.getElementById('patientAllergy').value,
+        },
+        medications: medications.map(text => {
+          const parts = text.split(/\s+/);
+          return {
+            name: parts[0] || text,
+            dosage: parts[1] || '',
+            route: parts[2] || '',
+            schedule: parts.slice(3).join(' '),
+          };
+        }),
+      };
+      startSessionBtn.disabled = true;
+      const res = await fetch('/api/sessions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      startSessionBtn.disabled = false;
+      if (data.code !== 0) {
+        alert(data.errorMsg || '启动监测失败');
+        return;
+      }
+      currentSession = data.data;
+      renderSession(currentSession);
+      simulateBtn.disabled = false;
+      medications = [];
+      medicationList.innerHTML = '';
+      medicationInput.value = '';
+      await fetchRooms();
+    });
+
+    addMedicationBtn.addEventListener('click', () => {
+      const value = medicationInput.value.trim();
+      if (!value) return;
+      medications.push(value);
+      const tag = document.createElement('span');
+      tag.className = 'medication-tag';
+      tag.textContent = value;
+      tag.onclick = () => {
+        medications = medications.filter(item => item !== value);
+        tag.remove();
+      };
+      medicationList.appendChild(tag);
+      medicationInput.value = '';
+    });
+
+    simulateBtn.addEventListener('click', async () => {
+      if (!currentSession) return;
+      const room = rooms.find(r => r.id === currentSession.room_id) || selectedRoom;
+      const parameters = (room?.devices || []).flatMap(device => device.parameters || []);
+      if (!parameters.length) {
+        alert('当前手术间未配置监测参数');
+        return;
+      }
+      const payload = {
+        parameters: parameters.map(param => ({
+          parameter_id: param.id,
+          value: generateValue(param.threshold),
+        }))
+      };
+      const res = await fetch(`/api/sessions/${currentSession.id}/ingest`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (data.code !== 0) {
+        alert(data.errorMsg || '数据采集失败');
+        return;
+      }
+      renderReadings(data.data.readings || []);
+      renderAlerts(data.data.alerts || []);
+      renderActiveSessions();
+    });
+
+    async function fetchAlerts() {
+      if (!currentSession) {
+        alertListEl.innerHTML = '<div class="empty-state">暂无预警</div>';
+        return;
+      }
+      const res = await fetch(`/api/sessions/${currentSession.id}/alerts`);
+      const data = await res.json();
+      if (data.code === 0) {
+        renderAlerts(data.data || []);
+      }
+    }
+
+    addRoomBtn.addEventListener('click', async () => {
+      const name = prompt('请输入手术间名称');
+      if (!name) return;
+      const location = prompt('请输入手术间位置');
+      const description = prompt('请输入备注/功能');
+      const res = await fetch('/api/rooms', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, location, description })
+      });
+      const data = await res.json();
+      if (data.code !== 0) {
+        alert(data.errorMsg || '创建失败');
+        return;
+      }
+      await fetchRooms();
+    });
+
+    function generateValue(threshold) {
+      if (!threshold) {
+        return Number((Math.random() * 100).toFixed(1));
+      }
+      const min = threshold.min_value ?? 0;
+      const max = threshold.max_value ?? (min + 100);
+      const mid = (min + max) / 2;
+      const span = (max - min) || 40;
+      const shouldAlert = Math.random() < 0.35;
+      if (shouldAlert) {
+        if (Math.random() > 0.5 && max !== null && max !== undefined) {
+          return Number((max + Math.random() * span * 0.5).toFixed(1));
+        }
+        if (min !== null && min !== undefined) {
+          return Number((min - Math.random() * span * 0.5).toFixed(1));
+        }
+      }
+      return Number((mid + (Math.random() - 0.5) * span * 0.3).toFixed(1));
+    }
+
+    fetchRooms();
+    renderActiveSessions();
+  </script>
 </body>
-<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-  integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-<script>
-  init();
-  function init() {
-    $.ajax("/api/count", {
-      method: "get",
-    }).done(function (res) {
-      if (res && res.data !== undefined) {
-        $(".count-number").html(res.data);
-      }
-    });
-  }
-  function set(action) {
-    $.ajax("/api/count", {
-      method: "POST",
-      contentType: "application/json; charset=utf-8",
-      dataType: "json",
-      data: JSON.stringify({
-        action: action,
-      }),
-    }).done(function (res) {
-      if (res && res.data !== undefined) {
-        $(".count-number").html(res.data);
-      }
-    });
-  }
-</script>
 
 </html>

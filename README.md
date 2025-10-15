@@ -1,123 +1,67 @@
-# wxcloudrun-flask
-[![GitHub license](https://img.shields.io/github/license/WeixinCloud/wxcloudrun-express)](https://github.com/WeixinCloud/wxcloudrun-express)
-![GitHub package.json dependency version (prod)](https://img.shields.io/badge/python-3.7.3-green)
+# 麻醉生命体征智能预警平台
 
-微信云托管 python Flask 框架模版，实现简单的计数器读写接口，使用云托管 MySQL 读写、记录计数值。
+基于 Flask 构建的全流程麻醉安全协同系统。平台支持多手术间配置、设备 API 集成、用药信息管理，并在生命体征超出阈值时调用 Dify LLM 给出干预建议，帮助麻醉医生快速做出决策。
 
-![](https://qcloudimg.tencent-cloud.cn/raw/be22992d297d1b9a1a5365e606276781.png)
+## 功能亮点
 
+- **多手术间管理**：为每个手术间配置监护仪、注射泵、麻醉机等设备及其参数。
+- **阈值预警与联动**：灵活设置参数阈值，自动检测并生成预警记录。
+- **患者与用药档案**：维护患者基础信息、麻醉用药清单和术中记录。
+- **Dify 智能建议**：在生命体征异常时将现场信息推送至 Dify，获取针对性建议。
+- **科技感前端界面**：可视化展示多源参数、预警记录和推荐意见，支持模拟数据流验证流程。
+
+## 目录结构
+
+```
+.
+├── config.py                 # 全局配置（数据库、Dify 等）
+├── requirements.txt          # 依赖声明
+├── run.py                    # 运行入口
+└── wxcloudrun
+    ├── __init__.py           # 应用初始化与数据库创建
+    ├── dao.py                # 数据持久化工具
+    ├── dify_client.py        # Dify API 封装
+    ├── model.py              # SQLAlchemy 模型定义
+    ├── response.py           # 统一响应结构
+    ├── templates
+    │   └── index.html        # 前端控制台
+    └── views.py              # REST API 与监测业务逻辑
+```
 
 ## 快速开始
-前往 [微信云托管快速开始页面](https://developers.weixin.qq.com/miniprogram/dev/wxcloudrun/src/basic/guide.html)，选择相应语言的模板，根据引导完成部署。
 
-## 本地调试
-下载代码在本地调试，请参考[微信云托管本地调试指南](https://developers.weixin.qq.com/miniprogram/dev/wxcloudrun/src/guide/debug/)
+1. **准备环境**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   ```
 
-## 实时开发
-代码变动时，不需要重新构建和启动容器，即可查看变动后的效果。请参考[微信云托管实时开发指南](https://developers.weixin.qq.com/miniprogram/dev/wxcloudrun/src/guide/debug/dev.html)
+2. **设置环境变量（可选）**
+   - `DATABASE_URL`：默认使用项目根目录下的 SQLite 数据库，可根据需要指向 MySQL。
+   - `DIFY_API_URL` 与 `DIFY_API_KEY`：配置后即可启用 Dify 联动。
 
-## Dockerfile最佳实践
-请参考[如何提高项目构建效率](https://developers.weixin.qq.com/miniprogram/dev/wxcloudrun/src/scene/build/speed.html)
+3. **启动应用**
+   ```bash
+   flask --app run.py run
+   ```
+   访问 `http://127.0.0.1:5000` 打开监测工作台。
 
-## 目录结构说明
+4. **模拟流程**
+   - 左侧新增手术间并配置设备/阈值（可通过 API）。
+   - 选择手术间，录入患者与用药资料后启动监测。
+   - 点击“模拟采集数据”即可演示阈值告警与 Dify 建议的联动。
 
-~~~
-.
-├── Dockerfile dockerfile       dockerfile
-├── README.md README.md         README.md文件
-├── container.config.json       模板部署「服务设置」初始化配置（二开请忽略）
-├── requirements.txt            依赖包文件
-├── config.py                   项目的总配置文件  里面包含数据库 web应用 日志等各种配置
-├── run.py                      flask项目管理文件 与项目进行交互的命令行工具集的入口
-└── wxcloudrun                  app目录
-    ├── __init__.py             python项目必带  模块化思想
-    ├── dao.py                  数据库访问模块
-    ├── model.py                数据库对应的模型
-    ├── response.py             响应结构构造
-    ├── templates               模版目录,包含主页index.html文件
-    └── views.py                执行响应的代码所在模块  代码逻辑处理主要地点  项目大部分代码在此编写
-~~~
+## API 概览
 
+- `POST /api/rooms`：创建手术间。
+- `POST /api/rooms/<room_id>/devices`：为手术间接入设备。
+- `POST /api/devices/<device_id>/parameters`：注册监测参数。
+- `POST /api/parameters/<parameter_id>/threshold`：配置阈值。
+- `POST /api/sessions`：启动监测会话。
+- `POST /api/sessions/<session_id>/ingest`：写入实时参数并自动触发预警。
 
-
-## 服务 API 文档
-
-### `GET /api/count`
-
-获取当前计数
-
-#### 请求参数
-
-无
-
-#### 响应结果
-
-- `code`：错误码
-- `data`：当前计数值
-
-##### 响应结果示例
-
-```json
-{
-  "code": 0,
-  "data": 42
-}
-```
-
-#### 调用示例
-
-```
-curl https://<云托管服务域名>/api/count
-```
-
-
-
-### `POST /api/count`
-
-更新计数，自增或者清零
-
-#### 请求参数
-
-- `action`：`string` 类型，枚举值
-  - 等于 `"inc"` 时，表示计数加一
-  - 等于 `"clear"` 时，表示计数重置（清零）
-
-##### 请求参数示例
-
-```
-{
-  "action": "inc"
-}
-```
-
-#### 响应结果
-
-- `code`：错误码
-- `data`：当前计数值
-
-##### 响应结果示例
-
-```json
-{
-  "code": 0,
-  "data": 42
-}
-```
-
-#### 调用示例
-
-```
-curl -X POST -H 'content-type: application/json' -d '{"action": "inc"}' https://<云托管服务域名>/api/count
-```
-
-## 使用注意
-如果不是通过微信云托管控制台部署模板代码，而是自行复制/下载模板代码后，手动新建一个服务并部署，需要在「服务设置」中补全以下环境变量，才可正常使用，否则会引发无法连接数据库，进而导致部署失败。
-- MYSQL_ADDRESS
-- MYSQL_PASSWORD
-- MYSQL_USERNAME
-以上三个变量的值请按实际情况填写。如果使用云托管内MySQL，可以在控制台MySQL页面获取相关信息。
-
-
+详细请求/响应示例可参考 `wxcloudrun/views.py` 中的注释实现。
 
 ## License
 

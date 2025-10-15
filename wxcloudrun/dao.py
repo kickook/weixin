@@ -1,64 +1,34 @@
 import logging
+from contextlib import contextmanager
 
-from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import SQLAlchemyError
 
 from wxcloudrun import db
-from wxcloudrun.model import Counters
 
-# 初始化日志
-logger = logging.getLogger('log')
+logger = logging.getLogger(__name__)
 
 
-def query_counterbyid(id):
-    """
-    根据ID查询Counter实体
-    :param id: Counter的ID
-    :return: Counter实体
-    """
+@contextmanager
+def session_scope():
     try:
-        return Counters.query.filter(Counters.id == id).first()
-    except OperationalError as e:
-        logger.info("query_counterbyid errorMsg= {} ".format(e))
-        return None
-
-
-def delete_counterbyid(id):
-    """
-    根据ID删除Counter实体
-    :param id: Counter的ID
-    """
-    try:
-        counter = Counters.query.get(id)
-        if counter is None:
-            return
-        db.session.delete(counter)
+        yield db.session
         db.session.commit()
-    except OperationalError as e:
-        logger.info("delete_counterbyid errorMsg= {} ".format(e))
+    except SQLAlchemyError as exc:
+        db.session.rollback()
+        logger.exception("Database operation failed", exc_info=exc)
+        raise
 
 
-def insert_counter(counter):
-    """
-    插入一个Counter实体
-    :param counter: Counters实体
-    """
-    try:
-        db.session.add(counter)
-        db.session.commit()
-    except OperationalError as e:
-        logger.info("insert_counter errorMsg= {} ".format(e))
+def save(entity):
+    with session_scope() as session:
+        session.add(entity)
+        session.flush()
+        return entity
 
 
-def update_counterbyid(counter):
-    """
-    根据ID更新counter的值
-    :param counter实体
-    """
-    try:
-        counter = query_counterbyid(counter.id)
-        if counter is None:
-            return
-        db.session.flush()
-        db.session.commit()
-    except OperationalError as e:
-        logger.info("update_counterbyid errorMsg= {} ".format(e))
+def delete(entity):
+    with session_scope() as session:
+        session.delete(entity)
+
+
+__all__ = ['session_scope', 'save', 'delete']
